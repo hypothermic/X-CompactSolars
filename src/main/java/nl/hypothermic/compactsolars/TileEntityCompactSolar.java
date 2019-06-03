@@ -12,7 +12,6 @@ import net.minecraft.server.EntityHuman;
 import ic2.api.ElectricItem;
 import net.minecraft.server.Item;
 import ic2.api.IElectricItem;
-import ic2.api.EnergyNet;
 import ic2.api.NetworkHelper;
 import ic2.api.Direction;
 
@@ -82,7 +81,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
                 generateEnergy -= ElectricItem.charge(this.inventory[0], generateEnergy, this.type.ordinal() + 1, false, false);
             }
             if (generateEnergy > 0) {
-                EnergyNet.getForWorld(this.world).emitEnergyFrom(this, generateEnergy);
+                ic2.common.EnergyNet.getForWorld(this.world).emitEnergyFrom(this, generateEnergy);
             }
         }
     }
@@ -222,7 +221,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
     
     public void j() {
         if (this.world != null && this.initialized) {
-            EnergyNet.getForWorld(this.world).removeTileEntity(this);
+            ic2.common.EnergyNet.getForWorld(this.world).removeTileEntity(this);
         }
         super.j();
     }
