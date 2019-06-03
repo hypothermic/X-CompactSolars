@@ -72,7 +72,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
         if (!this.noSunlight) {
             if (this.tick-- == 0) {
                 this.updateSunState();
-                this.tick = 256;
+                this.tick = mod_CompactSolars.sunUpdateTime;
             }
             int generateEnergy = 0;
             if (this.theSunIsVisible && (mod_CompactSolars.productionRate == 1 || TileEntityCompactSolar.random.nextInt(mod_CompactSolars.productionRate) == 0)) {

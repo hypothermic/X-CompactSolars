@@ -18,7 +18,7 @@ public class mod_CompactSolars extends NetworkMod
     @SidedProxy(clientSide = "cpw.mods.compactsolars.client.ClientProxy", serverSide = "nl.hypothermic.compactsolars.server.ServerProxy")
     public static IProxy proxy;
     public static BlockCompactSolar compactSolarBlock;
-    public static int productionRate;
+    public static int productionRate, sunUpdateTime;
     public static mod_CompactSolars instance;
     
     public String getVersion() {
@@ -44,7 +44,7 @@ public class mod_CompactSolars extends NetworkMod
             mod_CompactSolars.productionRate = orCreateIntProperty.getInt(1);
             final Property sunUpdateTime = configuration.getOrCreateIntProperty("sunUpdateTime", "general", 256);
             sunUpdateTime.comment = "Check if the sunlight is valid every X ticks. (standard=64)";
-            mod_CompactSolars.productionRate = sunUpdateTime.getInt(256);
+            mod_CompactSolars.sunUpdateTime = sunUpdateTime.getInt(256);
         }
         catch (Exception ex) {
             ModLoader.getLogger().severe("CompactSolars was unable to load it's configuration successfully");
