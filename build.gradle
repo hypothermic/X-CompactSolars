@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+group 'nl.hypothermic'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile name: 'server-3.1.2'
+    compile name: 'industrialcraft2-1.97-mcpc1.2.5-r7'
+    //compile name: 'mod_compactsolars-server-2.3.2.10-bukkit-mcpc-1.2.5'
+}
