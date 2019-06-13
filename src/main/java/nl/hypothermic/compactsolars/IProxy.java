@@ -9,8 +9,8 @@ import net.minecraft.server.EntityItem;
 import java.io.File;
 import forge.IGuiHandler;
 
-public interface IProxy extends IGuiHandler
-{
+public interface IProxy extends IGuiHandler {
+
     File getMinecraftDir();
     
     void registerTranslations();
@@ -22,4 +22,5 @@ public interface IProxy extends IGuiHandler
     void registerRenderInformation();
     
     void applyExtraDataToDrops(final EntityItem p0, final NBTTagCompound p1);
+
 }

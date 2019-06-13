@@ -9,16 +9,15 @@ import net.minecraft.server.Block;
 import net.minecraft.server.ItemStack;
 import ic2.api.Items;
 
-public enum CompactSolarType
-{
+public enum CompactSolarType {
+
     LV(8, "Low Voltage Solar Array", "lvTransformer", TileEntityCompactSolar.class),
     MV(64, "Medium Voltage Solar Array", "mvTransformer", TileEntityCompactSolarMV.class),
     HV(512, "High Voltage Solar Array", "hvTransformer", TileEntityCompactSolarHV.class);
     
-    private int output;
-    public Class clazz;
-    public String friendlyName;
-    public String transformerName;
+    private final int output;
+    public final Class clazz;
+    public final String friendlyName, transformerName;
     
     private CompactSolarType(final int output, final String friendlyName, final String transformerName, final Class clazz) {
         this.output = output;

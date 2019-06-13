@@ -15,12 +15,12 @@ import net.minecraft.server.IInventory;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.Container;
 
-public class ContainerCompactSolar extends Container
-{
-    public TileEntityCompactSolar tile;
+public class ContainerCompactSolar extends Container {
+
+    private final TileEntityCompactSolar tile;
     private boolean theSunIsVisible;
     private boolean initialized;
-    private EntityHuman myPlayer;
+    private final EntityHuman myPlayer;
     
     public ContainerCompactSolar(final IInventory inventory, final TileEntityCompactSolar tile, final CompactSolarType compactSolarType) {
         this.tile = tile;
@@ -72,12 +72,12 @@ public class ContainerCompactSolar extends Container
                     return null;
                 }
             }
-            else if (n >= 1 && n < 28) {
+            else if (n < 28) {
                 if (!this.a(item, 28, 37, false)) {
                     return null;
                 }
             }
-            else if (n >= 28 && n < 37) {
+            else if (n < 37) {
                 if (!this.a(item, 1, 27, false)) {
                     return null;
                 }
@@ -86,7 +86,7 @@ public class ContainerCompactSolar extends Container
                 return null;
             }
             if (item.count == 0) {
-                slot.set((ItemStack)null);
+                slot.set(null);
             }
             else {
                 slot.d();
@@ -104,6 +104,6 @@ public class ContainerCompactSolar extends Container
     }
     
     public IInventory getInventory() {
-        return (IInventory)this.tile;
+        return this.tile;
     }
 }

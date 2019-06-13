@@ -6,12 +6,12 @@ package nl.hypothermic.compactsolars;
 
 import net.minecraft.server.ModLoader;
 
-public enum ServerClientProxy
-{
+public enum ServerClientProxy {
+
     CLIENT("cpw.mods.compactsolars.client.ClientProxy"), 
-    SERVER("cpw.mods.compactsolars.server.ServerProxy");
+    SERVER("nl.hypothermic.compactsolars.server.ServerProxy");
     
-    private String className;
+    private final String className;
     
     private ServerClientProxy(final String className) {
         this.className = className;

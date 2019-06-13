@@ -7,8 +7,8 @@ package nl.hypothermic.compactsolars;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.ItemBlock;
 
-public class ItemCompactSolar extends ItemBlock
-{
+public class ItemCompactSolar extends ItemBlock {
+
     public ItemCompactSolar(final int n) {
         super(n);
         this.setMaxDurability(0);

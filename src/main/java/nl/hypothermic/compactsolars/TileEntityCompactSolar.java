@@ -5,7 +5,6 @@
 package nl.hypothermic.compactsolars;
 
 import minecraft.server.mod_CompactSolars;
-import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.EntityHuman;
@@ -26,18 +25,17 @@ import ic2.api.IEnergySource;
 import net.minecraft.server.IInventory;
 import net.minecraft.server.TileEntity;
 
-public class TileEntityCompactSolar extends TileEntity implements IInventory, IEnergySource, INetworkDataProvider, INetworkUpdateListener, IWrenchable
-{
-    private static Random random;
+public class TileEntityCompactSolar extends TileEntity implements IInventory, IEnergySource, INetworkDataProvider, INetworkUpdateListener, IWrenchable {
+
+    public static final Random RANDOM = new Random();
     private CompactSolarType type;
-    private ItemStack[] inventory;
+    private final ItemStack[] inventory;
     private boolean initialized;
     public boolean theSunIsVisible;
     private int tick;
     private boolean canRain;
     private boolean noSunlight;
-    //private boolean compatibilityMode;
-    private static List fields;
+    private static final List fields = Collections.emptyList();
     
     public TileEntityCompactSolar() {
         this(CompactSolarType.LV);
@@ -46,7 +44,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
     public TileEntityCompactSolar(final CompactSolarType type) {
         this.type = type;
         this.inventory = new ItemStack[1];
-        this.tick = TileEntityCompactSolar.random.nextInt(64);
+        this.tick = TileEntityCompactSolar.RANDOM.nextInt(64);
     }
     
     public boolean emitsEnergyTo(final TileEntity tileEntity, final Direction direction) {
@@ -54,10 +52,6 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
     }
     
     public void q_() {
-        /*if (this.compatibilityMode) {
-            this.world.setData(this.x, this.y, this.z, this.type.ordinal());
-            this.compatibilityMode = false;
-        }*/
         if (!this.initialized && this.world != null) {
             if (mod_CompactSolars.proxy.isRemote()) {
                 NetworkHelper.requestInitialData(this);
@@ -74,7 +68,7 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
                 this.tick = mod_CompactSolars.sunUpdateTime;
             }
             int generateEnergy = 0;
-            if (this.theSunIsVisible && (mod_CompactSolars.productionRate == 1 || TileEntityCompactSolar.random.nextInt(mod_CompactSolars.productionRate) == 0)) {
+            if (this.theSunIsVisible && (mod_CompactSolars.productionRate == 1 || TileEntityCompactSolar.RANDOM.nextInt(mod_CompactSolars.productionRate) == 0)) {
                 generateEnergy = this.generateEnergy();
             }
             if (generateEnergy > 0 && this.inventory[0] != null && Item.byId[this.inventory[0].id] instanceof IElectricItem) {
@@ -159,10 +153,16 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
     public boolean a(final EntityHuman entityHuman) {
         return this.world == null || (this.world.getTileEntity(this.x, this.y, this.z) == this && entityHuman.e(this.x + 0.5, this.y + 0.5, this.z + 0.5) <= 64.0);
     }
-    
+
+    /**
+     * Open Inventory
+     */
     public void f() {
     }
-    
+
+    /**
+     * Close Inventory
+     */
     public void g() {
     }
     
@@ -182,34 +182,38 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
     }
     
     public float getWrenchDropRate() {
+        // Always returns the item when clicked with a bronze wrench
         return 1.0f;
     }
-    
-    public void b(final NBTTagCompound nbtTagCompound) {
-        super.b(nbtTagCompound);
+
+    /**
+     * Save to NBT (block or chunk gets unloaded after)
+     */
+    public void b(final NBTTagCompound tag) {
+        super.b(tag);
         final NBTTagList list = new NBTTagList();
         for (int i = 0; i < this.inventory.length; ++i) {
             if (this.inventory[i] != null) {
                 final NBTTagCompound nbtTagCompound2 = new NBTTagCompound();
                 nbtTagCompound2.setByte("Slot", (byte)i);
                 this.inventory[i].save(nbtTagCompound2);
-                list.add((NBTBase)nbtTagCompound2);
+                list.add(nbtTagCompound2);
             }
         }
-        nbtTagCompound.set("Items", (NBTBase)list);
+        tag.set("Items", list);
     }
-    
-    public void a(final NBTTagCompound nbtTagCompound) {
-        /*if (nbtTagCompound.getString("id") != this.type.name()) {
-            this.compatibilityMode = true;
-        }*/
-        super.a(nbtTagCompound);
-        final NBTTagList list = nbtTagCompound.getList("Items");
-        this.inventory = new ItemStack[this.getSize()];
+
+    /**
+     * Load from NBT (block or chunk gets loaded)
+     */
+    public void a(final NBTTagCompound tag) {
+        super.a(tag);
+        final NBTTagList list = tag.getList("Items");
+        //this.inventory = new ItemStack[this.getSize()];
         for (int i = 0; i < list.size(); ++i) {
             final NBTTagCompound nbtTagCompound2 = (NBTTagCompound)list.get(i);
             final int n = nbtTagCompound2.getByte("Slot") & 0xFF;
-            if (n >= 0 && n < this.inventory.length) {
+            if (n < this.inventory.length) {
                 this.inventory[n] = ItemStack.a(nbtTagCompound2);
             }
         }
@@ -226,20 +230,16 @@ public class TileEntityCompactSolar extends TileEntity implements IInventory, IE
         super.j();
     }
     
-    public ItemStack splitWithoutUpdate(final int n) {
-        if (this.inventory[n] != null) {
-            final ItemStack itemStack = this.inventory[n];
-            this.inventory[n] = null;
+    public ItemStack splitWithoutUpdate(final int slot) {
+        if (this.inventory[slot] != null) {
+            final ItemStack itemStack = this.inventory[slot];
+            this.inventory[slot] = null;
             return itemStack;
         }
         return null;
     }
     
-    public void setMaxStackSize(final int n) {
-    }
-    
-    static {
-        TileEntityCompactSolar.random = new Random();
-        TileEntityCompactSolar.fields = Collections.emptyList();
+    public void setMaxStackSize(final int maxStackSize) {
+
     }
 }

@@ -10,8 +10,8 @@ import java.util.logging.Level;
 import cpw.mods.fml.common.FMLCommonHandler;
 import java.util.Properties;
 
-public class Version
-{
+public class Version {
+
     private static String major;
     private static String minor;
     private static String rev;

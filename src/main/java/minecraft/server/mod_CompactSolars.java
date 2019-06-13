@@ -13,24 +13,20 @@ import nl.hypothermic.compactsolars.*;
 
 import java.io.File;
 
-public class mod_CompactSolars extends NetworkMod
-{
+public class mod_CompactSolars extends NetworkMod {
+
     @SidedProxy(clientSide = "cpw.mods.compactsolars.client.ClientProxy", serverSide = "nl.hypothermic.compactsolars.server.ServerProxy")
     public static IProxy proxy;
     public static BlockCompactSolar compactSolarBlock;
-    public static int productionRate, sunUpdateTime;
+    public static int productionRate = 1, sunUpdateTime;
     public static mod_CompactSolars instance;
-    
-    public String getVersion() {
-        return Version.version();
-    }
     
     public void load() {
         MinecraftForge.versionDetect("CompactSolars", 3, 2, 4);
         if (mod_CompactSolars.instance == null) {
             mod_CompactSolars.instance = this;
         }
-        MinecraftForge.setGuiHandler((BaseMod) mod_CompactSolars.instance, (IGuiHandler) mod_CompactSolars.proxy);
+        MinecraftForge.setGuiHandler(mod_CompactSolars.instance, mod_CompactSolars.proxy);
         final Configuration configuration = new Configuration(new File(mod_CompactSolars.proxy.getMinecraftDir(), "config/IC2CompactSolars.cfg"));
         try {
             configuration.load();
@@ -45,8 +41,7 @@ public class mod_CompactSolars extends NetworkMod
             final Property sunUpdateTime = configuration.getOrCreateIntProperty("sunUpdateTime", "general", 256);
             sunUpdateTime.comment = "Check if the sunlight is valid every X ticks. (standard=64)";
             mod_CompactSolars.sunUpdateTime = sunUpdateTime.getInt(256);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ModLoader.getLogger().severe("CompactSolars was unable to load it's configuration successfully");
             ex.printStackTrace(System.err);
             throw new RuntimeException(ex);
@@ -75,8 +70,8 @@ public class mod_CompactSolars extends NetworkMod
     public String getPriorities() {
         return "after:mod_IC2";
     }
-    
-    static {
-        mod_CompactSolars.productionRate = 1;
+
+    public String getVersion() {
+        return Version.version();
     }
 }

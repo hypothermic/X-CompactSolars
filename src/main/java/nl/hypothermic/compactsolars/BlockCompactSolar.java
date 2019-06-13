@@ -21,15 +21,14 @@ import java.util.Random;
 import forge.ITextureProvider;
 import net.minecraft.server.BlockContainer;
 
-public class BlockCompactSolar extends BlockContainer implements ITextureProvider
-{
-    private Random random;
+public class BlockCompactSolar extends BlockContainer implements ITextureProvider {
+
+    private static final Random RANDOM = TileEntityCompactSolar.RANDOM;
     
     public BlockCompactSolar(final int n) {
         super(n, Material.ORE);
         this.a("CompactSolar");
         this.c(3.0f);
-        this.random = new Random();
         this.j();
     }
     
@@ -41,8 +40,8 @@ public class BlockCompactSolar extends BlockContainer implements ITextureProvide
         return CompactSolarType.makeEntity(n);
     }
     
-    public int getBlockTexture(final IBlockAccess blockAccess, final int n, final int n2, final int n3, final int n4) {
-        final CompactSolarType compactSolarType = CompactSolarType.values()[blockAccess.getData(n, n2, n3)];
+    public int getBlockTexture(final IBlockAccess blockAccess, final int x, final int y, final int z, final int n4) {
+        final CompactSolarType compactSolarType = CompactSolarType.values()[blockAccess.getData(x, y, z)];
         return (n4 == 1) ? (compactSolarType.getTextureRow() * 16 + 1) : ((n4 == 0) ? (compactSolarType.getTextureRow() * 16 + 2) : (compactSolarType.getTextureRow() * 16));
     }
     
@@ -65,16 +64,16 @@ public class BlockCompactSolar extends BlockContainer implements ITextureProvide
         return "/cpw/mods/compactsolars/sprites/block_textures.png";
     }
     
-    public boolean interact(final World world, final int n, final int n2, final int n3, final EntityHuman entityHuman) {
+    public boolean interact(final World world, final int x, final int y, final int z, final EntityHuman entityHuman) {
         if (entityHuman.isSneaking()) {
             return false;
         }
         if (world.isStatic) {
             return true;
         }
-        final TileEntity tileEntity = world.getTileEntity(n, n2, n3);
-        if (tileEntity != null && tileEntity instanceof TileEntityCompactSolar) {
-            entityHuman.openGui((BaseMod)mod_CompactSolars.instance, ((TileEntityCompactSolar)tileEntity).getType().ordinal(), world, n, n2, n3);
+        final TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityCompactSolar) {
+            entityHuman.openGui(mod_CompactSolars.instance, ((TileEntityCompactSolar)tileEntity).getType().ordinal(), world, x, y, z);
         }
         return true;
     }
@@ -95,11 +94,11 @@ public class BlockCompactSolar extends BlockContainer implements ITextureProvide
         for (int i = n; i < tileEntityCompactSolar.getSize(); ++i) {
             final ItemStack item = tileEntityCompactSolar.getItem(i);
             if (item != null) {
-                final float n2 = this.random.nextFloat() * 0.8f + 0.1f;
-                final float n3 = this.random.nextFloat() * 0.8f + 0.1f;
-                final float n4 = this.random.nextFloat() * 0.8f + 0.1f;
+                final float n2 = RANDOM.nextFloat() * 0.8f + 0.1f;
+                final float n3 = RANDOM.nextFloat() * 0.8f + 0.1f;
+                final float n4 = RANDOM.nextFloat() * 0.8f + 0.1f;
                 while (item.count > 0) {
-                    int count = this.random.nextInt(21) + 10;
+                    int count = RANDOM.nextInt(21) + 10;
                     if (count > item.count) {
                         count = item.count;
                     }
@@ -107,13 +106,13 @@ public class BlockCompactSolar extends BlockContainer implements ITextureProvide
                     itemStack.count -= count;
                     final EntityItem entityItem = new EntityItem(world, (double)(tileEntityCompactSolar.x + n2), (double)(tileEntityCompactSolar.y + ((n > 0) ? 1 : 0) + n3), (double)(tileEntityCompactSolar.z + n4), new ItemStack(item.id, count, item.getData()));
                     final float n5 = 0.05f;
-                    entityItem.motX = (float)this.random.nextGaussian() * n5;
-                    entityItem.motY = (float)this.random.nextGaussian() * n5 + 0.2f;
-                    entityItem.motZ = (float)this.random.nextGaussian() * n5;
+                    entityItem.motX = (float) RANDOM.nextGaussian() * n5;
+                    entityItem.motY = (float) RANDOM.nextGaussian() * n5 + 0.2f;
+                    entityItem.motZ = (float) RANDOM.nextGaussian() * n5;
                     if (item.hasTag()) {
                         mod_CompactSolars.proxy.applyExtraDataToDrops(entityItem, (NBTTagCompound)item.getTag().clone());
                     }
-                    world.addEntity((Entity)entityItem);
+                    world.addEntity(entityItem);
                 }
             }
         }
@@ -122,7 +121,7 @@ public class BlockCompactSolar extends BlockContainer implements ITextureProvide
     public void addCreativeItems(final ArrayList list) {
         final CompactSolarType[] values = CompactSolarType.values();
         for (int length = values.length, i = 0; i < length; ++i) {
-            list.add(new ItemStack((Block)this, 1, values[i].ordinal()));
+            list.add(new ItemStack(this, 1, values[i].ordinal()));
         }
     }
 }
